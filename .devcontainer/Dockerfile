@@ -28,15 +28,12 @@ COPY --from=conda-builder /opt/conda /opt/conda
 
 # Set up conda for all users
 ENV PATH="/opt/conda/bin:$PATH"
-RUN /opt/conda/bin/conda init bash && \
-    /opt/conda/bin/conda init zsh
 
-# Configure for vscode user
-USER vscode
+# Initialize conda for system-wide use
 RUN /opt/conda/bin/conda init bash && \
     /opt/conda/bin/conda init zsh && \
-    echo "conda activate nyc_airbnb_dev" >> ~/.bashrc && \
-    echo "conda activate nyc_airbnb_dev" >> ~/.zshrc
+    echo "conda activate nyc_airbnb_dev" >> /etc/bash.bashrc && \
+    echo "conda activate nyc_airbnb_dev" >> /etc/zsh/zshrc
 
 # Set working directory
 WORKDIR /workspace
