@@ -10,11 +10,6 @@ COPY components/conda.yml /tmp/components-conda.yml
 RUN mamba env create -f /tmp/environment.yml && \
     mamba clean -afy
 
-# Pre-create common component environments (optional - saves time)
-COPY components/get_data/conda.yml /tmp/get-data-conda.yml
-RUN mamba env create -f /tmp/get-data-conda.yml && \
-    mamba clean -afy
-
 # Final stage - based on Debian Bookworm
 FROM mcr.microsoft.com/devcontainers/base:bookworm
 
