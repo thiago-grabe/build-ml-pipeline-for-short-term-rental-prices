@@ -33,7 +33,7 @@ ENV PATH="/opt/conda/bin:$PATH"
 RUN /opt/conda/bin/conda init bash && \
     /opt/conda/bin/conda init zsh && \
     echo "conda activate nyc_airbnb_dev" >> /etc/bash.bashrc && \
-    echo "conda activate nyc_airbnb_dev" >> /etc/zsh/zshrc
+    echo "conda activate nyc_airbnb_dev" >> /etc/zshrc
 
 # Set working directory
 WORKDIR /workspace
