@@ -1,13 +1,11 @@
 # Multi-stage build for efficiency
 FROM condaforge/mambaforge:24.3.0-0 AS conda-builder
 
-# Copy environment files
+# Copy only the main environment file
 COPY environment.yml /tmp/environment.yml
-COPY conda.yml /tmp/conda.yml
-COPY components/conda.yml /tmp/components-conda.yml
 
-# Create main development environment
-RUN mamba env create -f /tmp/environment.yml && \
+# Create main development environment with parallel downloads and libmamba solver
+RUN mamba env create -f /tmp/environment.yml --yes && \
     mamba clean -afy
 
 # Final stage - based on Debian Bookworm
