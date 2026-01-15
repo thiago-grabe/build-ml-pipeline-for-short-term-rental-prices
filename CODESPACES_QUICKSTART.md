@@ -14,13 +14,17 @@
 ### 2. Add Your W&B API Key
 
 1. Go to https://wandb.ai/authorize
-2. Copy your API key
+2. Copy your **v1 API key**
+   - New keys have format: `wandb_v1_...` (86 characters)
+   - Legacy 40-character keys are being phased out
 3. In GitHub, go to Settings → Codespaces → Secrets
 4. Click **New secret**:
    - Name: `WANDB_API_KEY`
-   - Value: [paste your key]
+   - Value: [paste your full v1 API key]
    - Repository access: Select this repo
 5. **Rebuild codespace**: Cmd+Shift+P → "Codespaces: Rebuild Container"
+
+**Note:** This repository uses wandb 0.24.0, which supports the new secure v1 API key format.
 
 ### 3. Verify Setup
 
