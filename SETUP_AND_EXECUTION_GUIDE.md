@@ -113,7 +113,7 @@ conda activate nyc_airbnb_dev
 This will install:
 - Python 3.12.7
 - MLflow 2.18.0
-- Weights & Biases 0.21.3
+- Weights & Biases 0.24.0 (with v1 API key support)
 - Hydra 1.3.2
 - All other dependencies
 
@@ -139,12 +139,21 @@ Weights & Biases (W&B) is used for experiment tracking and artifact management.
 ### Step 1: Get Your API Key
 
 1. Go to [https://wandb.ai/authorize](https://wandb.ai/authorize)
-2. Click the **+** icon to copy your API key to clipboard
+2. Copy your **v1 API key**
+   - New keys have format: `wandb_v1_...` (86 characters)
+   - Legacy 40-character keys are being phased out
+   - This repository uses wandb 0.24.0, which supports the new secure v1 API key format
 
 ### Step 2: Login to W&B
 
+**For Codespaces:**
+- Add your v1 API key to GitHub Codespaces Secrets (see Option A above)
+- Rebuild container to apply
+
+**For Local Setup:**
 ```bash
-wandb login [paste-your-api-key-here]
+wandb login
+# Paste your v1 API key when prompted
 ```
 
 You should see a message like:
@@ -155,25 +164,73 @@ wandb: Appending key for api.wandb.ai to your netrc file: /home/[username]/.netr
 ### Step 3: Verify Login
 
 ```bash
-wandb verify
+wandb whoami
 ```
 
-If successful, you'll see: `API key is valid!`
+If successful, you'll see your W&B username.
+
+---
+
+## Student Implementation Requirements
+
+**⚠️ IMPORTANT: This is a Student Template**
+
+This project is designed for educational purposes. Several components contain placeholder code marked with `# YOUR CODE HERE` that you must implement as part of your learning exercises.
+
+### What You Need to Implement
+
+Before running the complete pipeline, you must:
+
+1. **Create `src/basic_cleaning/` component** using cookiecutter:
+   ```bash
+   cookiecutter cookie-mlflow-step -o src
+   ```
+   When prompted, enter:
+   - `step_name`: `basic_cleaning`
+   - `script_name`: `run.py`
+   - `job_type`: `basic_cleaning`
+   - `short_description`: `Basic data cleaning`
+   - `long_description`: `Download from W&B the raw dataset and apply some basic data cleaning`
+   - `parameters`: `input_artifact,output_artifact,output_type,output_description,min_price,max_price`
+
+2. **Implement `src/basic_cleaning/run.py`**:
+   - Download `sample.csv:latest` from W&B
+   - Filter prices between `min_price` and `max_price`
+   - Convert `last_review` to datetime format
+   - Upload cleaned CSV as `clean_sample.csv` to W&B
+
+3. **Complete main.py basic_cleaning parameters** (lines 60-66):
+   - Replace `# YOUR CODE HERE` with proper parameter dictionary
+
+4. **Implement missing tests in `src/data_check/test_data.py`**:
+   - `test_row_count(data)` - Verify dataset has at least 1000 rows
+   - `test_price_range(data, min_price, max_price)` - Validate all prices within bounds
+
+5. **Complete placeholders in `src/train_random_forest/run.py`**:
+   - Line 57: Load training artifact
+   - Line 78: Fit the pipeline
+   - Line 100: Save model with MLflow
+   - Line 109: Upload model to W&B
+   - Line 119: Log MAE metric
+   - Line 159: Create preprocessing pipeline
+   - Line 218: Create sklearn Pipeline
+
+See `CLAUDE.md` for detailed implementation requirements and hints.
 
 ---
 
 ## Running the Complete Pipeline
 
 The complete pipeline consists of 5 main steps:
-1. **download** - Fetches raw data sample
-2. **basic_cleaning** - Removes outliers and handles dates
-3. **data_check** - Validates data quality with pytest
-4. **data_split** - Segregates test set
-5. **train_random_forest** - Trains the model
+1. **download** - Fetches raw data sample (✅ pre-built)
+2. **basic_cleaning** - Removes outliers and handles dates (❌ you implement)
+3. **data_check** - Validates data quality with pytest (⚠️ 2 tests missing)
+4. **data_split** - Segregates test set (✅ pre-built)
+5. **train_random_forest** - Trains the model (⚠️ has placeholders)
 
 ### First Run: Create Reference Dataset
 
-For the first run, execute only the first 3 steps to create a reference dataset for data validation:
+After implementing the `basic_cleaning` component, execute the first steps to create a reference dataset:
 
 ```bash
 mlflow run . -P steps=download,basic_cleaning
@@ -201,11 +258,17 @@ Before running data_check, you need to tag the cleaned data as a reference:
 
 ### Run the Complete Pipeline
 
-Now you can run all steps:
+After implementing all required components, you can run all steps:
 
 ```bash
 mlflow run .
 ```
+
+**Prerequisites:**
+- ✅ `src/basic_cleaning/` component created and implemented
+- ✅ All placeholders in `src/train_random_forest/run.py` filled
+- ✅ Missing tests in `src/data_check/test_data.py` implemented
+- ✅ Parameters in `main.py` basic_cleaning section completed
 
 **Expected Duration:** 10-15 minutes (depending on your machine/Codespace)
 
@@ -496,7 +559,7 @@ Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifa
 **Error:** MLflow fails to create conda environments
 
 **Solution:**
-Ensure all `conda.yml` files specify Python 3.12.7:
+Ensure all `conda.yml` files specify Python 3.12.7 (NOT 3.13):
 
 ```yaml
 dependencies:
@@ -504,11 +567,42 @@ dependencies:
   # ...
 ```
 
+**Why Python 3.12.7?**
+- MLflow 2.18.0 has compatibility issues with Python 3.13
+- Python 3.12.7 is the recommended version for this project
+
 Check and update:
 - `environment.yml`
-- `src/basic_cleaning/conda.yml`
+- `src/basic_cleaning/conda.yml` (when you create it)
 - `src/data_check/conda.yml`
 - `src/train_random_forest/conda.yml`
+
+### Issue: Missing basic_cleaning Component
+
+**Error:**
+```
+ERROR: Could not find conda.yml or conda.yaml in /path/to/src/basic_cleaning
+```
+
+**Cause:** The `basic_cleaning` component hasn't been created yet
+
+**Solution:**
+1. Create the component using cookiecutter (see "Student Implementation Requirements" above)
+2. Implement the data cleaning logic in `run.py`
+3. Fill in the parameters in `main.py`
+
+### Issue: Placeholder Code Not Implemented
+
+**Error:**
+```
+SyntaxError: invalid syntax
+  trainval_local_path = # YOUR CODE HERE
+```
+
+**Cause:** Placeholder code in `src/train_random_forest/run.py` hasn't been replaced with actual implementation
+
+**Solution:**
+Replace all `# YOUR CODE HERE` sections with working code (see `CLAUDE.md` for hints)
 
 ### Issue: Long Pipeline Execution Time
 
@@ -570,13 +664,14 @@ The Random Forest pipeline includes:
 
 ### Key Files
 
-- `main.py`: Pipeline orchestration
-- `config.yaml`: All parameters
-- `environment.yml`: Main conda environment
-- `src/basic_cleaning/`: Data cleaning component
-- `src/data_check/`: pytest-based validation
-- `src/train_random_forest/`: Model training with sklearn
-- `components/`: Pre-built reusable components
+- `main.py`: Pipeline orchestration (has 1 placeholder section)
+- `config.yaml`: All parameters (complete)
+- `environment.yml`: Main conda environment (complete)
+- `src/basic_cleaning/`: Data cleaning component (❌ students create)
+- `src/data_check/`: pytest-based validation (⚠️ 2 tests missing)
+- `src/train_random_forest/`: Model training with sklearn (⚠️ 7 placeholders)
+- `components/`: Pre-built reusable components (✅ complete)
+- `CLAUDE.md`: Detailed student implementation guide
 
 ---
 

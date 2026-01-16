@@ -37,21 +37,39 @@ wandb whoami      # Should show your username
 
 ## Running the Pipeline
 
-### Full Pipeline
+**⚠️ IMPORTANT:** Before running the pipeline, you must complete the student implementation tasks below!
+
+### Pre-Built Steps (Ready to Run)
 ```bash
-mlflow run .
+# Download data (works immediately)
+mlflow run . -P steps=download
 ```
 
-### Single Steps
+### Steps Requiring Implementation
+
+**❌ basic_cleaning** - Directory doesn't exist yet
 ```bash
-# Download data
-mlflow run . -P steps=download
+# First create with cookiecutter:
+cookiecutter cookie-mlflow-step -o src
+# Then implement run.py and fill in main.py parameters
+```
 
-# Data cleaning
-mlflow run . -P steps=basic_cleaning
+**⚠️ data_check** - Missing 2 test functions
+```bash
+# Implement test_row_count and test_price_range first
+mlflow run . -P steps=data_check
+```
 
-# Multiple steps
-mlflow run . -P steps=download,basic_cleaning,data_check
+**⚠️ train_random_forest** - Has 7 placeholder sections
+```bash
+# Fill in all "# YOUR CODE HERE" sections first
+mlflow run . -P steps=train_random_forest
+```
+
+### Full Pipeline (After Implementation)
+```bash
+# Only works after all components implemented
+mlflow run .
 ```
 
 ### Hyperparameter Tuning
@@ -112,27 +130,63 @@ To manually stop:
 
 ## Student Implementation Tasks
 
-**IMPORTANT**: This project includes TODO sections for you to implement as part of your learning. The following sections are intentionally incomplete:
+**⚠️ THIS IS A STUDENT TEMPLATE ⚠️**
 
-### 1. Pipeline Orchestration (`main.py`)
-You need to implement 5 pipeline steps:
-- `basic_cleaning` - Clean raw data (remove outliers, convert dates)
-- `data_check` - Run pytest-based data validation
-- `data_split` - Split data into train/val/test sets
-- `train_random_forest` - Train RF model with feature engineering
-- `test_regression_model` - Evaluate production model
+This project includes TODO sections for you to implement. The pipeline **will not run** until you complete these tasks.
 
-### 2. Model Training (`src/train_random_forest/run.py`)
-You need to implement:
-- Download artifact with `run.use_artifact(...).file()`
-- Fit model with `sk_pipe.fit(X_train, y_train)`
-- Save model with `mlflow.sklearn.save_model(...)`
-- Create and log W&B artifact
-- Log MAE metric
+### Task 1: Create basic_cleaning Component
 
-### 3. Data Validation (`src/data_check/test_data.py`)
-You need to implement pytest functions:
-- `test_row_count(data)` - Verify dataset size
-- `test_price_range(data, min_price, max_price)` - Validate price bounds
+**Status:** ❌ Directory missing
 
-See `CLAUDE.md` for detailed implementation requirements.
+**Steps:**
+```bash
+# 1. Create component with cookiecutter
+cookiecutter cookie-mlflow-step -o src
+
+# When prompted, enter:
+# step_name: basic_cleaning
+# script_name: run.py
+# parameters: input_artifact,output_artifact,output_type,output_description,min_price,max_price
+```
+
+**Then implement** `src/basic_cleaning/run.py`:
+- Download `sample.csv:latest` from W&B
+- Filter prices: keep rows where `min_price <= price <= max_price`
+- Convert `last_review` to datetime
+- Save and upload `clean_sample.csv` to W&B
+
+**Finally update** `main.py` lines 60-66:
+- Replace `# YOUR CODE HERE` with parameter dictionary
+
+### Task 2: Complete train_random_forest Placeholders
+
+**Status:** ⚠️ 7 placeholders to fill
+
+**File:** `src/train_random_forest/run.py`
+
+Replace `# YOUR CODE HERE` at:
+- **Line 57:** `trainval_local_path = run.use_artifact(args.trainval_artifact).file()`
+- **Line 78:** `sk_pipe.fit(X_train, y_train)`
+- **Line 100:** `mlflow.sklearn.save_model(sk_pipe, "random_forest_dir")`
+- **Line 109:** Create W&B artifact and upload model directory
+- **Line 119:** `run.summary['mae'] = mae`
+- **Line 159:** `non_ordinal_categorical_preproc = make_pipeline(SimpleImputer(...), OneHotEncoder())`
+- **Line 218:** `sk_pipe = Pipeline([("preprocessor", preprocessor), ("random_forest", random_forest)])`
+
+### Task 3: Implement Missing Tests
+
+**Status:** ⚠️ 2 functions missing
+
+**File:** `src/data_check/test_data.py`
+
+Add after line 60:
+```python
+def test_row_count(data: pd.DataFrame):
+    """Test that dataset has at least 1000 rows"""
+    assert len(data) > 1000
+
+def test_price_range(data: pd.DataFrame, min_price: float, max_price: float):
+    """Test that all prices are within expected range"""
+    assert data['price'].min() >= min_price
+    assert data['price'].max() <= max_price
+```
