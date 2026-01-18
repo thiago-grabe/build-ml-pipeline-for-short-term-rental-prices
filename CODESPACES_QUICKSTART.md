@@ -137,7 +137,7 @@ The `nyc_airbnb_dev` conda environment is configured to auto-activate in new ter
   NYC Airbnb ML Pipeline - Codespace
 ==========================================
 
-Environment: Python 3.12.7, MLflow 2.18.0
+Environment: Python 3.12.7, MLflow 3.3.2
 Disk Space: XXG available
 
 Quick Start:
@@ -156,7 +156,7 @@ conda env list
 # Verify Python version (should be 3.12.7)
 python --version
 
-# Verify MLflow version (should be 2.18.0)
+# Verify MLflow version (should be 3.3.2)
 mlflow --version
 ```
 
@@ -170,7 +170,7 @@ conda activate nyc_airbnb_dev
 
 - **Name**: `nyc_airbnb_dev`
 - **Python**: 3.12.7
-- **Key Packages**: MLflow 2.18.0, W&B 0.24.0, pandas 2.3.2, scikit-learn 1.7.2
+- **Key Packages**: MLflow 3.3.2, W&B 0.24.0, pandas 2.3.2, scikit-learn 1.7.2
 - **Location**: `/opt/conda/envs/nyc_airbnb_dev`
 
 ---

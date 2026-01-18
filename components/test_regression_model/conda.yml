@@ -9,6 +9,6 @@ dependencies:
   - scikit-learn=1.7.2
   - pandas=2.3.2
   - pip:
-      - mlflow==2.18.0
+      - mlflow==3.3.2
       - wandb==0.24.0
       - -e ..

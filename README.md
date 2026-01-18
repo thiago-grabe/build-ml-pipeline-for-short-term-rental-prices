@@ -353,7 +353,7 @@ with the cleaned data:
      - pip=24.3.1
      - pandas=2.3.2
      - pip:
-         - mlflow==2.18.0
+         - mlflow==3.3.2
          - wandb==0.24.0
    ```
    
