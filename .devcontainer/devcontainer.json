@@ -22,6 +22,9 @@
       "description": "Your Weights & Biases API key from https://wandb.ai/authorize"
     }
   },
+  "remoteEnv": {
+    "MLFLOW_EXPERIMENT_NAME": "nyc_airbnb"
+  },
   "forwardPorts": [5000, 8888, 8889],
   "portsAttributes": {
     "5000": {
