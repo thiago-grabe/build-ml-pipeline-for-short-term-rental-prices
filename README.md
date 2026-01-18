@@ -97,6 +97,11 @@ You should see a message similar to:
 wandb: Appending key for api.wandb.ai to your netrc file: /home/[your username]/.netrc
 ```
 
+### Create your Experiment
+
+To manually create and run a new MLflow experiment, use the command `mlflow run . --experiment-name [your_experiment_name]` from your project directory. Replace `[your_experiment_name]` with your desired name; this will initialize a new experiment if it does not already exist.
+
+
 ### Cookie cutter
 In order to make your job a little easier, you are provided a cookie cutter template that you can use to create 
 stubs for new pipeline components. It is not required that you use this, but it might save you from a bit of 
