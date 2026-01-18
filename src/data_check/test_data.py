@@ -61,5 +61,5 @@ def test_similar_neigh_distrib(data: pd.DataFrame, ref_data: pd.DataFrame, kl_th
 
 
 ########################################################
-# Implement here test_row_count and test_price_range #
+# Implement here test_row_count and test_price_range   #
 ########################################################
